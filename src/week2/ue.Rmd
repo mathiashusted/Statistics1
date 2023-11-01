@@ -1,0 +1,60 @@
+## Aufgabe 5
+**A:** In Stichproben von n = 10, 20, 100 Studierenden befinden sich jeweils
+60% Studentinnen. Berechnen Sie für alle drei Stichproben die p-Werte
+des zweiseitigen Binomialtests mit Trefferwahrscheinlichkeit p = 1/2
+(d.h. die Nullhypothese $H_0 : p = 1/2$ besagt, dass es genau 50% Stu-
+dentinnen in der Grundpopulation gibt).
+
+```{r}
+stud_10 <- (binom.test(6,10, p=0.5))
+stud_10_p <- stud_10$p.value
+stud_20 <- (binom.test(12,20, p=0.5))
+stud_20_p <- stud_20$p.value
+stud_100 <- (binom.test(60,100, p=0.5))
+stud_100_p <- stud_100$p.value
+
+
+```
+
+
+
+**B: ** In einer Stichprobe von n = 100 Studierenden befinden sich k = 0, . . . , 100
+Studentinnen. Berechnen Sie für alle k den p-Wert des zweiseitigen Bi-
+nomialtests $H_0 : p = 1/2$ und stellen Sie
+
+- a: die p-Werte
+- b: den Zehnerlogarithmus (log10) der p-Werte
+in jeweils einem Streudiagramm (plot) dar
+
+
+```{r}
+sum_stud <- c()
+for (x in 1:100) {
+  sum_stud[x] <- binom.test(x,100, p=0.5)$p.value
+}
+
+plot(1:length((sum_stud)), sum_stud, xlab="Anzahl Studentinnen (von 100)", ylab="p-Wert", type="l", col="red", lwd=2, main="p-Werte")
+plot(1:length((sum_stud)), log(sum_stud, 10), xlab="Anzahl Studentinnen (von 100)", ylab="p-Wert", type="l", col="red", lwd=2, main="p-Werte in log_10")
+```
+
+
+## Aufgabe 6
+Stellen Sie die Binomialverteilungen für n = 10, 20, 100 und Tref-
+ferwahrscheinlichkeit p = 1/2 in geeigneten Diagrammen mit R dar. Wählen
+Sie für alle Diagramme die gleiche Skalierung der Y-Achse (ylim=). Was fällt
+Ihnen an den Verteilungen auf? Für welche k werden die maximalen Wahr-
+scheinlichkeiten angenommen? Geben Sie diese Wahrscheinlichkeiten an.
+
+```{r}
+plot(dbinom(1:10, 10, prob=0.5), type="l", col="red", lwd=2, xlab="n", ylab="Wahrscheinlichkeit", main="Für n=10", ylim=c(0,.25))
+plot(dbinom(1:20, 20, prob=0.5), type="l", col="red", lwd=2, xlab="n", ylab="Wahrscheinlichkeit", main="Für n=20", ylim=c(0,.25))
+plot(dbinom(1:100, 100, prob=0.5), type="l", col="red", lwd=2, xlab="n", ylab="Wahrscheinlichkeit", main="Für n=100", ylim=c(0,.25))
+```
+
+### Beobachtung:
+Die maximale Wahrscheinlichkeit befindet sich immer in der Mitte - da, wo die "Trefferrate" genau 50% beträgt. Mit größerem n wird die maximale Wahrscheinlichkeit kleiner, da sie sich auf mehr Elemente in der Mitte aufteilen muss.
+
+
+
+
+
