@@ -1,9 +1,11 @@
+# Statistik 1 - Blatt 2
+
 ## Aufgabe 5
-**A:** In Stichproben von n = 10, 20, 100 Studierenden befinden sich jeweils
+**A:** *In Stichproben von n = 10, 20, 100 Studierenden befinden sich jeweils
 60% Studentinnen. Berechnen Sie für alle drei Stichproben die p-Werte
 des zweiseitigen Binomialtests mit Trefferwahrscheinlichkeit p = 1/2
 (d.h. die Nullhypothese $H_0 : p = 1/2$ besagt, dass es genau 50% Stu-
-dentinnen in der Grundpopulation gibt).
+dentinnen in der Grundpopulation gibt).*
 
 ```{r}
 stud_10 <- (binom.test(6,10, p=0.5))
@@ -18,9 +20,9 @@ stud_100_p <- stud_100$p.value
 
 
 
-**B: ** In einer Stichprobe von n = 100 Studierenden befinden sich k = 0, . . . , 100
+**B: ** *In einer Stichprobe von n = 100 Studierenden befinden sich k = 0, . . . , 100
 Studentinnen. Berechnen Sie für alle k den p-Wert des zweiseitigen Bi-
-nomialtests $H_0 : p = 1/2$ und stellen Sie
+nomialtests $H_0 : p = 1/2$ und stellen Sie*
 
 - a: die p-Werte
 - b: den Zehnerlogarithmus (log10) der p-Werte
@@ -39,11 +41,11 @@ plot(1:length((sum_stud)), log(sum_stud, 10), xlab="Anzahl Studentinnen (von 100
 
 
 ## Aufgabe 6
-Stellen Sie die Binomialverteilungen für n = 10, 20, 100 und Tref-
+*Stellen Sie die Binomialverteilungen für n = 10, 20, 100 und Tref-
 ferwahrscheinlichkeit p = 1/2 in geeigneten Diagrammen mit R dar. Wählen
 Sie für alle Diagramme die gleiche Skalierung der Y-Achse (ylim=). Was fällt
 Ihnen an den Verteilungen auf? Für welche k werden die maximalen Wahr-
-scheinlichkeiten angenommen? Geben Sie diese Wahrscheinlichkeiten an.
+scheinlichkeiten angenommen? Geben Sie diese Wahrscheinlichkeiten an.*
 
 ```{r}
 plot(dbinom(1:10, 10, prob=0.5), type="l", col="red", lwd=2, xlab="n", ylab="Wahrscheinlichkeit", main="Für n=10", ylim=c(0,.25))
@@ -53,6 +55,96 @@ plot(dbinom(1:100, 100, prob=0.5), type="l", col="red", lwd=2, xlab="n", ylab="W
 
 ### Beobachtung:
 Die maximale Wahrscheinlichkeit befindet sich immer in der Mitte - da, wo die "Trefferrate" genau 50% beträgt. Mit größerem n wird die maximale Wahrscheinlichkeit kleiner, da sie sich auf mehr Elemente in der Mitte aufteilen muss.
+
+
+## Aufgabe 7
+**A)** *Sei n der Umfang einer Stichprobe von Studierenden und k die Anzahl
+der Studentinnen in dieser Stichprobe. Geben Sie für beliebiges n ≥ 4
+eine Formel für den p-Wert des zweiseitigen Binomialtests (H0 : p = 1/2)
+an, wenn sich in der Stichprobe
+(a) k = 0
+(b) k = 1
+(c) k = 2
+Studentinnen befinden.*
+
+Allgemeine Formel zur Bestimmung von Wahrscheinlichkeit: $P_r(X=k) = \binom{n}{k}\cdot p^k\cdot(1-p)^{n-k}\\$
+
+Beispiel für k = 0: $P_r(X=0) = \binom{n}{0}\cdot(\frac{1}{2})^0\cdot(1-\frac{1}{2})^{n-0}$
+
+Also kann die Formel allgemein wie folgt ausgedrückt werden:
+
+$$
+\sum_{i=0}^{k}{\binom{n}{k}\cdot p^k\cdot(1-p)^{n-k}} + \sum_{i=k}^{n}{\binom{n}{k}\cdot p^k\cdot(1-p)^{n-k}}
+$$
+
+Diese Formel wurde an das folgende R Beispiel aus der Vorlesung angelehnt:
+```{r}
+p.Wert <- sum(dbinom(0:465, size=1003, prob=0.5))+
++ sum(dbinom(538:1003, size=1003, prob=0.5))
+```
+
+**B:** *Bestimmen Sie (durch systematisches Probieren mit R) das kleinste n, für das der Binomialtest die Nullhypothese H0 : p = 1/2 auf dem Signi-
+fikanzniveau α = 0,001 ablehnt, wenn
+(a) k = 0
+(b) k = 1
+(c) k = 2
+ist. Benutzen Sie die Formeln aus der vorigen Teilaufgabe.*
+
+
+Wir können mit Hilfe einer Schleife systematisch das kleinste n herausfinden. Probehalber wurde das n hier bis 10.000 getestet, was sich für k={0,1,2} als ausreichend herausgestellt hat.
+
+```{r}
+nTest <- function(k, sigNiveau) {
+  print(paste0("Test für k = ", k))
+  for (x in k:10000) {
+    p.Wert <- sum(dbinom(k, size=x, prob=0.5))+
+    + sum(dbinom(k, size=x, prob=0.5))
+    if (p.Wert < sigNiveau) {
+      print(paste0("p-Wert: ", p.Wert))
+      print(paste0("Kleinstes n gefunden. n = ", x))
+      break
+    }
+    else {
+      print(paste0("p-Wert: ", p.Wert))
+      print(paste0(x))
+    }
+  } 
+}
+
+#Test für k={0,1,2}
+nTest(0, 0.001)
+nTest(1, 0.001)
+nTest(2, 0.001)
+
+```
+
+## Aufgabe 8
+*Bestimmen Sie für eine Stichprobe vom Umfang $n = 100$ das kleinste $k > 50$ von Treffern, so dass der zweiseitige Binomialtest mit Trefferwahrscheinlichkeit $p = 1/2$ auf dem Signifikanzniveau $α = 0,05$ signifikant
+wird. Der Bereich ${0, 1, ... , n − k, k, k + 1, ..., n}$ heißt der Ablehnungsbereich
+zum Signifikanzniveau $α = 0,05$. Durch welche Eigenschaft ist dieser Bereich
+charakterisiert*
+
+```{r}
+
+print(paste0("Test für n = 100"))
+for (x in 51:100) {
+  p.Wert <- sum(dbinom(x, size=100, prob=0.5))+
+  + sum(dbinom(x, size=100, prob=0.5))
+  if (p.Wert > .05) {
+    print(paste0("p-Wert: ", p.Wert))
+    print(paste0("Kleinstes k gefunden. k = ", x))
+    break
+  }
+  else {
+    print(paste0("p-Wert: ", p.Wert))
+    print(paste0(x))
+  }
+} 
+
+```
+
+
+
 
 
 
