@@ -1,10 +1,17 @@
-# Aufgabe 14
-**A) In einer Studie werden n = 15 Patienten behandelt. Die Wahrscheinlichkeit für die Heilung eines Patienten sei p = 0.8. Berechnen Sie mit R die Wahrscheinlichkeiten für:**
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 
-**(a) höchstens k = 10 Heilungen.
-(b) mindestens k = 10 Heilungen.
-(c) höchstens k = 12 Heilungen.
-(d) mindestens k = 12 Heilungen.**
+# Aufgabe 14
+
+**A) In einer Studie werden n = 15 Patienten behandelt. Die
+Wahrscheinlichkeit für die Heilung eines Patienten sei p = 0.8.
+Berechnen Sie mit R die Wahrscheinlichkeiten für:**
+
+**(a) höchstens k = 10 Heilungen. (b) mindestens k = 10 Heilungen. (c)
+höchstens k = 12 Heilungen. (d) mindestens k = 12 Heilungen.**
 
 ```{r}
 a <- pbinom(q=15, size=15, prob=.8)
@@ -14,15 +21,18 @@ d <- pbinom(q=12-1, size=15, prob=.8, lower.tail = FALSE)
 ```
 
 ### Ergebnisse:
+
 a = `r a`
 
-b = `r b` (Hier musste q=9 gesetzt werden, da Bereich rechts von q wichtig)
+b = `r b` (Hier musste q=9 gesetzt werden, da Bereich rechts von q
+wichtig)
 
 c = `r c`
 
 c = `r d`
 
 ### Veranschaulichung:
+
 ```{r}
 plot(0:15, dbinom(0:15, size=15, prob=.8), type="l", xlab="Beispielhaft für k=10", ylab="Wahrscheinlichkeit", col="red", lwd=3)
 abline(v= 10,
@@ -30,14 +40,11 @@ abline(v= 10,
        lwd=1)
 ```
 
-**B) In einer anderen Studie werden n = 150 Patienten behandelt. Berechnen
-Sie die Wahrscheinlichkeit für
-(a) höchstens k = 100 Heilungen.
-(b) mindestens k = 100 Heilungen.
-(c) höchstens k = 120 Heilungen.
-(d) mindestens k = 120 Heilungen.
-p=0.8
-Was fällt Ihnen beim Vergleich der Teilaufgaben A und B auf?**
+**B) In einer anderen Studie werden n = 150 Patienten behandelt.
+Berechnen Sie die Wahrscheinlichkeit für (a) höchstens k = 100
+Heilungen. (b) mindestens k = 100 Heilungen. (c) höchstens k = 120
+Heilungen. (d) mindestens k = 120 Heilungen. p=0.8 Was fällt Ihnen beim
+Vergleich der Teilaufgaben A und B auf?**
 
 ```{r}
 a <- pbinom(q=100, size=150, prob=.8)
@@ -47,6 +54,7 @@ d <- pbinom(q=120-1, size=150, prob=.8, lower.tail = FALSE)
 ```
 
 ### Ergebnisse:
+
 a = `r a` (aka: SEHR KLEIN!!!1!11)
 
 b = `r b`
@@ -66,15 +74,13 @@ abline(v= 150,
        lwd=1)
 ```
 
-
-
-
 # Aufgabe 15
-**Ein fairer Würfel soll n = 100 mal geworfen werden. Schreiben
-Sie eine Simulation in R, in der dieses Experiment N = 100.000 mal wiederholt
+
+**Ein fairer Würfel soll n = 100 mal geworfen werden. Schreiben Sie eine
+Simulation in R, in der dieses Experiment N = 100.000 mal wiederholt
 wird. Speichern Sie von jedem der N Durchläufe die Anzahl der Sechsen in
-einem Vektor ab. Stellen Sie das Ergebnis der Simulation in einem Histogramm
-dar.**
+einem Vektor ab. Stellen Sie das Ergebnis der Simulation in einem
+Histogramm dar.**
 
 ```{r}
 wurfelwurf <- function(n) {
@@ -89,22 +95,92 @@ wurfelwurf <- function(n) {
 hist(wurfelwurf(100), breaks=10)
 ```
 
-Wir würden als maximale Wahrscheinlichkeit $\frac{100000}{6}=16666.\overline{6}$ erwarten.
+Wir würden als maximale Wahrscheinlichkeit
+$\frac{100000}{6}=16666.\overline{6}$ erwarten.
 
-**Aufgabe 16: Es sei bekannt, dass im menschlichen Genom durchschnittlich
-eine Ankersequenz pro 1267 bp (Basenpaare) auftritt.
+# Aufgabe 16
 
-A Wie viele Anker treten durchschnittlich in 1000 bp auf? Wie viele Anker
-treten durchschnittlich in einem DNA Abschnitt der Länge L kbp auf
-(kbp=1000bp)?
-B Wie lange muss ein DNA Fragment mindestens sein, damit es mit einer
-Wahrscheinlichkeit von mehr als 95% mindestens einen Anker enth¨alt?
-Geben Sie die Länge in kbp an.
-Hinweis: Gehen Sie davon aus, dass die Anzahl der Anker in einem DNA
-Abschnitt poissonverteilt ist. Der Parameter λ der Poissonverteilung ist
-dabei die durchschnittliche Anzahl der Anker in dem DNA Abschnitt.**
+**Aufgabe 16: Es sei bekannt, dass im menschlichen Genom
+durchschnittlich eine Ankersequenz pro 1267 bp (Basenpaare) auftritt. A Wie viele Anker treten durchschnittlich in 1000 bp auf? Wie viele Anker treten durchschnittlich in einem DNA Abschnitt der Länge L kbp auf
+(kbp=1000bp)? B Wie lange muss ein DNA Fragment mindestens sein, damit
+es mit einer Wahrscheinlichkeit von mehr als 95% mindestens einen Anker
+enthält? Geben Sie die Länge in kbp an. Hinweis: Gehen Sie davon aus,
+dass die Anzahl der Anker in einem DNA Abschnitt poissonverteilt ist.
+Der Parameter λ der Poissonverteilung ist dabei die durchschnittliche
+Anzahl der Anker in dem DNA Abschnitt.**
+
+```{r}
+a <- ppois(1, lambda=1.267)
+```
+
+Im Durchschnitt pro 1kbp: `r a` Anker
 
 
 ```{r}
-dpois(1/1000, lambda=1/1267)
+b <- ppois(3, lambda=1.267)
 ```
+
+3000kbp -> `r b` Anker -> Ca. 3kbp.
+
+
+# Aufgabe 17
+
+**Aufgabe 17: Stellen Sie die Binomialverteilung b(k, n, λ/n) der Poissonvertei-
+lung p(k, λ) (k = 0, . . . , 10) für λ = 2 in einem Säulendiagramm gegenüber. Er-
+stellen Sie für n = 10, 100, 1000 jeweils ein Diagramm. Zeichnen Sie die Säulen
+für die Wahrscheinlichkeiten der Binomial- und Possonverteilung in verschiede-
+nen Farben. Die Säule der Bionomial- und der Poissonverteilung zum gleichen
+k sollen nebeneinander stehen, sich aber nicht überdecken. Interpretieren Sie
+die Graphiken.**
+
+## n = 10
+
+```{r}
+
+library(ggplot2)
+
+n <- 10
+l <- 2
+
+binm <- dbinom(x=0:n, size=n, prob=l/n)
+pois <- dpois(x=0:n, lambda=l)
+
+dat <- data.frame(0:n, binm, pois)
+
+
+ggplot(dat, aes(x = factor(X0.n), y = pois)) + 
+  geom_bar(stat = "identity", position="dodge")
+ggplot(dat, aes(x = factor(X0.n), y = binm)) + 
+  geom_bar(stat = "identity", position="dodge")
+
+n <- 100
+
+binm <- dbinom(x=0:n, size=n, prob=l/n)
+pois <- dpois(x=0:n, lambda=l)
+
+dat <- data.frame(0:n, binm, pois)
+
+ggplot(dat, aes(x = factor(0:n), y = pois)) + 
+  geom_bar(stat = "identity", position="dodge")
+ggplot(dat, aes(x = factor(0:n), y = binm)) + 
+  geom_bar(stat = "identity", position="dodge")
+
+
+n <- 1000
+
+binm <- dbinom(x=0:n, size=n, prob=l/n)
+pois <- dpois(x=0:n, lambda=l)
+
+dat <- data.frame(0:n, binm, pois)
+
+ggplot(dat, aes(x = factor(0:n), y = pois)) + 
+  geom_bar(stat = "identity", position="dodge")
+ggplot(dat, aes(x = factor(0:n), y = binm)) + 
+  geom_bar(stat = "identity", position="dodge")
+
+```
+
+
+
+
+
