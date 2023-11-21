@@ -81,17 +81,17 @@ Histogramm dar.**
 wurfelwurf <- function(n) {
   sechs <- c()
   for (i in 0:n) {
-    wurfel <- sample(c(1,2,3,4,5,6), size=100000, replace=TRUE)
+    wurfel <- sample(c(1,2,3,4,5,6), size=100, replace=TRUE)
     sechs[i] <- sum(wurfel == 6)
   }
   return(sechs)
 }
 
-hist(wurfelwurf(100), breaks=10)
+hist(wurfelwurf(100000), breaks=20)
 ```
 
-Wir würden als maximale Wahrscheinlichkeit
-$\frac{100000}{6}=16666.\overline{6}$ erwarten.
+Wir würden als durchschnittliche Menge der 6:
+$\frac{100}{6}=16.\overline{6}$ erwarten.
 
 # Aufgabe 16
 
@@ -105,10 +105,10 @@ Der Parameter λ der Poissonverteilung ist dabei die durchschnittliche
 Anzahl der Anker in dem DNA Abschnitt.**
 
 ```{r}
-a <- ppois(1, lambda=1.267)
+a <- 1000/1267
 ```
 
-Im Durchschnitt pro 1kbp: `r a` Anker
+Im Durchschnitt pro 1kbp: `r a` Anker (Unser $\lambda$)
 
 
 ```{r}
@@ -131,47 +131,47 @@ die Graphiken.**
 ## n = 10
 
 ```{r}
-
-library(ggplot2)
-
-n <- 10
-l <- 2
-
-binm <- dbinom(x=0:n, size=n, prob=l/n)
-pois <- dpois(x=0:n, lambda=l)
-
-dat <- data.frame(0:n, binm, pois)
-
-
-ggplot(dat, aes(x = factor(X0.n), y = pois)) + 
-  geom_bar(stat = "identity", position="dodge")
-ggplot(dat, aes(x = factor(X0.n), y = binm)) + 
-  geom_bar(stat = "identity", position="dodge")
-
-n <- 100
-
-binm <- dbinom(x=0:n, size=n, prob=l/n)
-pois <- dpois(x=0:n, lambda=l)
-
-dat <- data.frame(0:n, binm, pois)
-
-ggplot(dat, aes(x = factor(0:n), y = pois)) + 
-  geom_bar(stat = "identity", position="dodge")
-ggplot(dat, aes(x = factor(0:n), y = binm)) + 
-  geom_bar(stat = "identity", position="dodge")
-
-
-n <- 1000
-
-binm <- dbinom(x=0:n, size=n, prob=l/n)
-pois <- dpois(x=0:n, lambda=l)
-
-dat <- data.frame(0:n, binm, pois)
-
-ggplot(dat, aes(x = factor(0:n), y = pois)) + 
-  geom_bar(stat = "identity", position="dodge")
-ggplot(dat, aes(x = factor(0:n), y = binm)) + 
-  geom_bar(stat = "identity", position="dodge")
+# 
+# library(ggplot2)
+# 
+# n <- 10
+# l <- 2
+# 
+# binm <- dbinom(x=0:n, size=n, prob=l/n)
+# pois <- dpois(x=0:n, lambda=l)
+# 
+# dat <- data.frame(0:n, binm, pois)
+# 
+# 
+# ggplot(dat, aes(x = factor(X0.n), y = pois)) + 
+#   geom_bar(stat = "identity", position="dodge")
+# ggplot(dat, aes(x = factor(X0.n), y = binm)) + 
+#   geom_bar(stat = "identity", position="dodge")
+# 
+# n <- 100
+# 
+# binm <- dbinom(x=0:n, size=n, prob=l/n)
+# pois <- dpois(x=0:n, lambda=l)
+# 
+# dat <- data.frame(0:n, binm, pois)
+# 
+# ggplot(dat, aes(x = factor(0:n), y = pois)) + 
+#   geom_bar(stat = "identity", position="dodge")
+# ggplot(dat, aes(x = factor(0:n), y = binm)) + 
+#   geom_bar(stat = "identity", position="dodge")
+# 
+# 
+# n <- 1000
+# 
+# binm <- dbinom(x=0:n, size=n, prob=l/n)
+# pois <- dpois(x=0:n, lambda=l)
+# 
+# dat <- data.frame(0:n, binm, pois)
+# 
+# ggplot(dat, aes(x = factor(0:n), y = pois)) + 
+#   geom_bar(stat = "identity", position="dodge")
+# ggplot(dat, aes(x = factor(0:n), y = binm)) + 
+#   geom_bar(stat = "identity", position="dodge")
 
 ```
 
