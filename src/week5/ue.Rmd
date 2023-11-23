@@ -1,0 +1,13 @@
+# Aufgabe 19
+Erzeugen Sie n = 10, 1000, 100.000 gleichverteilte Zufallszahlen
+auf dem Intervall (−1, 2). Berechnen Sie von den drei Stichproben jeweils Mittelwert und Varianz. Wie gut stimmen diese Werte mit Erwarungswert und
+Varianz der Gleichverteilung auf (−1, 2) überein? Initialisieren Sie den Zufalls-
+zahlengenerator in R mit der Funktion set.seed
+
+
+```{r}
+set.seed(123)
+
+n_val <- c(10,1000,100000)
+
+```
