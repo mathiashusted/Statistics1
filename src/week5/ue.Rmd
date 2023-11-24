@@ -6,8 +6,37 @@ zahlengenerator in R mit der Funktion set.seed
 
 
 ```{r}
-set.seed(123)
+set.seed(5982)
 
-n_val <- c(10,1000,100000)
+n_val <- c(10, 1000, 10000)
+
+
+stats <- function(nums) {
+  average <- mean(nums)
+  variance <- var(nums)
+  return(c(average, variance))
+}
+
+exp_mean <- (-1+1+2)/4
+exp_value <- (-1)*(1/4)+1*(1/4)+2*(1/4)
+
+for (i in n_val) {
+  nums <- runif(i, -1, 2)
+  numstats <- stats(nums)
+  cat(sprintf("n = %d", i))
+  cat(sprintf("\nMittelwert = %f", numstats[1]))
+  cat(sprintf("\nVarianz = %f", numstats[2]))
+  cat(sprintf("\nAbweichung vom Erwartungswert = %f\n", (abs(numstats[1]-exp_value))))
+}
+
+
+numsA <- runif(10, -1, 2)
+
+numsB <- runif(1000, -1, 2)
+
+numsC <- runif(100000, -1, 2)
+
+
+
 
 ```
