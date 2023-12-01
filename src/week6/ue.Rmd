@@ -1,0 +1,87 @@
+# Aufgabe 22
+Nebenwirkungen von Arzneimitteln werden folgendermaßen klassifiziert:
+
+1. Häufig: 1 von 10 Behandelten
+2. Gelegentlich: 1 von 100 Behandelten
+3. Selten: 1 von 1000 Behandelten
+4. Sehr selten: 1 von 10.000 Behandelten
+
+Mit dem einseitigen Binomialtest soll nachgewiesen werden, dass eine Nebenwirkung höchstens häufig, gelentlich, selten oder sehr selten auftritt.
+
+A) Formulieren Sie für alle vier Häufigkeitsdefinitionen die passende Nullhypothese und Alternative.
+
+$$\text{1) } H_0 : p \ge p_0 = \frac{1}{10} \\
+H_1 : p < p_0 = \frac{1}{10} \\
+
+\text{2) } H_0 : p \ge p_0 = \frac{1}{100} \\
+H_1 : p < p_0 = \frac{1}{100} \\
+
+\text{3) } H_0 : p \ge p_0 = \frac{1}{1000} \\
+H_1 : p < p_0 = \frac{1}{1000} \\
+
+\text{4) } H_0 : p \ge p_0 = \frac{1}{10000} \\
+H_1 : p < p_0 = \frac{1}{10000}$$
+
+B) Geben Sie für jede dieser Häufigkeitsdefinitionen die Minimalzahl n an,
+die eine Studie mindestens haben muss, damit überhaupt die theoretische
+Möglichkeit besteht, die Nullhypothese auf dem einseitigen Signifikanz-
+niveau $α = 0.025$ abzulehnen.
+Hinweis: Überlegen Sie sich, für welche n die Nullhypothese selbst bei 0
+Nebenwirkungen nicht abgelehnt werden kann.
+
+```{r}
+minimalRejectionSize <- function(alpha, probability) {
+  i <- 0
+  while (pbinom(q=0, size=i, prob=probability) > alpha) {
+    i <- i+1
+  }
+  return(i)
+}
+
+
+a <- 0.025
+
+min <- minimalRejectionSize(a, (1/10))
+paste("Minimal n for (1/10):", min, "with value:", pbinom(q=0, size=min, prob=1/10))
+
+min <- minimalRejectionSize(a, (1/100))
+paste("Minimal n for (1/100):", min, "with value:", pbinom(q=0, size=min, prob=1/100))
+
+min <- minimalRejectionSize(a, (1/1000))
+paste("Minimal n for (1/1000):", min, "with value:", pbinom(q=0, size=min, prob=1/1000))
+
+min <- minimalRejectionSize(a, (1/10000))
+paste("Minimal n for (1/10000):", min, "with value:", pbinom(q=0, size=min, prob=1/10000))
+```
+
+
+# Aufgabe 23
+A Im Skript (Folien) wurde der Ablehnungsbereich des Binomialtests für die
+Nullhypothese $H0 : p \ge p0$ definiert. Geben Sie nun in gleicher Weise den
+Ablehnungsbereich des Binomialtests für die Nullhypothese $H0 : p \le p0$
+an. Wie kann die untere Grenze des Ablehnungsbereichs mit der R Funk-
+tion qbinom berechnet werden? Geben Sie insbesondere die Bedingung
+für einen leeren Ablehnungsbereich an.
+
+$$
+\text{Bestimme K für } P(X \le K) \le \alpha
+$$
+
+```{r}
+a <- 0.025
+
+1 - qbinom(a, size=100, prob=1/100)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
