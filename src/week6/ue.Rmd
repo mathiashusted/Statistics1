@@ -56,7 +56,7 @@ paste("Minimal n for (1/10000):", min, "with value:", pbinom(q=0, size=min, prob
 
 
 # Aufgabe 23
-A Im Skript (Folien) wurde der Ablehnungsbereich des Binomialtests für die
+A) Im Skript (Folien) wurde der Ablehnungsbereich des Binomialtests für die
 Nullhypothese $H0 : p \ge p0$ definiert. Geben Sie nun in gleicher Weise den
 Ablehnungsbereich des Binomialtests für die Nullhypothese $H0 : p \le p0$
 an. Wie kann die untere Grenze des Ablehnungsbereichs mit der R Funk-
@@ -70,18 +70,73 @@ $$
 ```{r}
 a <- 0.025
 
-1 - qbinom(a, size=100, prob=1/100)
+qbinom(a, size=100, prob=1/10)
+```
+
+B) Ein Würfel werde n = 1000 mal geworfen. p sei die Wahrscheinlichkeit
+für eine Sechs. Geben Sie den Ablehnungsbereich des Binomialtest für
+die Nullhypothese H0 : p ≤ 1/6 an.
+
+```{r}
+a <- 0.025
+n <- 1000
+p0 <- 1/6
+wurfel <- qbinom(a, size=n, prob=p0)
+paste(wurfel)
+```
+
+# Aufgabe 24
+Geben Sie für den einseitigen Binomialtest der Nullhypothese
+H0 : p ≥ p0 mit p0 = 0.01 die Ablehnungsbereiche für
+
+1. n = 1000 und α = 0,025
+2. n = 10.000 und α = 0,001
+3. n = 100.000 und α = 0,001
+
+an. Nehmen Sie nun an, dass in Wahrheit p = 0,005 gilt. Wie groß ist unter
+dieser Voraussetzung die Wahrscheinlichkeit für eine Ablehnung der Nullhypo-
+these in (i), (ii) und in (iii)?
+Hinweis: Die Wahrscheinlichkeit die Nullhypothese abzulehnen, heißt die Power
+des statistischen Tests.
+
+
+
+```{r}
+a <- 0.025
+n <- 1000
+p0 <- 0.005
+wurfel <- qbinom(a, size=n, prob=p0)
+paste(wurfel)
+
+a <- 0.001
+n <- 10000
+wurfel <- qbinom(a, size=n, prob=p0)
+paste(wurfel)
+
+a <- 0.001
+n <- 100000
+wurfel <- qbinom(a, size=n, prob=p0)
+paste(wurfel)
 ```
 
 
+# Aufgabe 25
+Geben Sie für beliebiges $0 < p < 0.3$ und $n = 100$ die Wahrscheinlichkeit (Power) an, mit dem der Binomialtest die Nullhypothese
+$H0 : p ≥ 0,3$
+auf dem Signifikanzniveau von $α = 0,025$ ablehnt. Plotten Sie die Power im Be-
+reich von $(0, 0.3)$ in einem Liniendiagramm. Wie verändert sich die Powerkurve,
+wenn die Fallzahl n auf $n = 300$ erhöht wird und sonst alle Angaben gleich
+bleiben?
 
 
 
-
-
-
-
-
+```{r}
+p0 <- seq(0.01, 0.29, by=0.01)
+a <- 0.025
+n <- 100
+plot(qbinom(1-a, n, prob=p0), type="l", col="red")
+lines(qbinom(1-a, 300, prob=p0), type="l", col="blue")
+```
 
 
 
