@@ -1,0 +1,118 @@
+# Aufgabe 26
+(i) Laden Sie den Datensatz in Blutdruckstudie.txt in einen R Datensatz.
+(ii) Berechnen Sie die Teststatistiken des verbundenen t-Tests f¨ur die Blut-
+druckver¨anderung (vorher - nachher) jeweils in der Placebo- (Gruppe=0)
+und Medikamentengruppe (Gruppe=1).
+(iii) Geben Sie die Freiheitsgrade f¨ur die Tests aus der vorangegangenenTeil-
+aufgabe an.
+(iv) Geben Sie die Grenzen der zweiseitigen Ablehnungsbereiche f¨ur die Test
+aus der vorangegangenen Teilaufgabe f¨ur die Signifikanzniveas α = 0,001, 0,01, 0,05, 0,1
+und α = 0,2 an.
+(v) Geben Sie f¨ur alle getesteten Nullhypothesen an, ob sie auf den Signi-
+fikanzniveaus α = 0,001, 0,01, 0,05, 0,1 und α = 0,2 abgelehnt werden
+k¨onnen.
+(vi) Geben Sie f¨ur die Blutdruckver¨anderung (vorher - nachher) jeweils in der
+Placebo- (Gruppe=0) und Medikamentengruppe (Gruppe=1) den p-Wert
+des zweiseitigen t-Test f¨ur verbundene Stichproben an.
+Hinweis: N¨utzliche R- Befehle: subset und t.test.
+
+```{r}
+# (i)
+blutdruck <- read.table(file = "~/Uni/Statistics1/src/week7/Blutdruckstudie.txt", header=TRUE)
+
+# (ii)
+
+placebo <- blutdruck[blutdruck$Gruppe=="0",]
+treated <- blutdruck[blutdruck$Gruppe=="1",]
+
+# For placebo
+placebo_test <- t.test(placebo$nachher, placebo$vorher, alternative="two.sided")
+
+treated_test <- t.test(treated$nachher, treated$vorher, alternative="two.sided")
+
+# (iii)
+df_placebo <- nrow(placebo) - 1
+df_treated <- nrow(treated) - 1
+# (iv)
+a <- c(0.001, 0.01, 0.05, 0.1, 0.2)
+
+
+# (v)
+# H0 = p > a
+
+
+for (i in a) {
+  if (placebo_test$p.value < i) {
+    cat("P-value = ", placebo_test$p.value, " lower than a for a = ", i)
+  }
+  else {
+    cat("P-value = ", placebo_test$p.value, " not lower than a for a = ", i)
+  }
+  cat("\n")
+}
+
+for (i in a) {
+  if (treated_test$p.value < i) {
+    cat("P-value = ", treated_test$p.value, " lower than a for a = ", i)
+  }
+  else {
+    cat("P-value = ", treated_test$p.value, " not lower than a for a = ", i)
+  }
+  cat("\n")
+}
+
+# (vi)
+cat(placebo_test$p.value)
+cat(treated_test$p.value)
+
+```
+# Aufgabe 27
+Sei S = (−1, 1, 1/2 ) eine Stichprobe.
+(I) Geben Sie den Ablehnungsbereich des Einstichproben t-Tests f¨ur α =
+0,025 und die einseitige Nullhypothese H0 : μ ≤ 0 an.
+(ii) Geben Sie den Ablehnungsbereich des Einstichproben t-Tests f¨ur α =
+0,025 und die einseitige Nullhypothese H0 : μ ≥ 0,1 an.
+(iii) Berechnen Sie die t-Teststatistik des Einstichproben t-Tests f¨ur die ein-
+seitige Nullhypothese H0 : μ ≤ 0. Kann die Nullhypothese H0 : μ ≤ 0
+auf dem 2,5% Niveau abgelehnt werden?
+(iv) Berechnen Sie die t-Teststatistik des Einstichproben t-Tests f¨ur die ein-
+seitige Nullhypothese H0 : μ ≥ 0,1. Kann die Nullhypothese H0 : μ ≥ 0,1
+auf dem 2,5% Niveau abgelehnt werden?
+
+
+
+```{r}
+s <- c(-1, 1, (1/2))
+
+# (i)
+a <- 0.025
+df <- length(s) - 1
+conf_interval <- 1 - a
+
+qt(conf_interval, df)
+
+# (ii)
+
+qt(a, df)
+
+# (iii)
+t.test()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
