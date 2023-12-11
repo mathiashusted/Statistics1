@@ -87,30 +87,105 @@ s <- c(-1, 1, (1/2))
 # (i)
 a <- 0.025
 df <- length(s) - 1
-conf_interval <- 1 - a
 
-qt(conf_interval, df)
+qt(1 - a, df)
 
 # (ii)
 
 qt(a, df)
 
 # (iii)
-t.test()
+(t.test(s, mu=0, alternative="greater"))
+
+# (iv)
+(t.test(s, mu=0.1, alternative="less"))
 ```
 
 
 
+# Aufgabe 28:
+Sei S = (−1, 1, 1/2 ) eine Stichprobe.
+
+(i) Geben Sie das gr¨oßte μ0 ∈ $\mathbb{R}$ an, f¨ur das die Nullhypothese H0 : μ ≤ μ0
+auf dem Signifikanzniveau α = 0,025 mit dem einseitigen Einstichproben
+t-Test von S abgelehnt werden kann.
+(ii) Geben Sie das kleinste μ1 ∈ $\mathbb{R}$ an, f¨ur das die Nullhypothese H0 : μ ≥ μ1
+auf dem Signifikanzniveau α = 0,025 mit dem einseitigen Einstichproben
+t-Test von S abgelehnt werden kann.
 
 
+```{r}
+# (i)
+s <- c(-1, 1, 1/2)
+a <- 0.025
+u <- 1
 
+while (TRUE) {
+  res <- t.test(s, mu=u, alternative="greater")
+  if (res$p.value < a) {
+    break
+  }
+  u <- u-0.01
+}
 
+u
+t.test(s, mu=u, alternative="greater")
 
+# (ii)
+u <- -5
 
+while (TRUE) {
+  res <- t.test(s, mu=u, alternative="less")
+  if (res$p.value < a) {
+    break
+  }
+  u <- u+0.01
+}
+u
+t.test(s, mu=u, alternative="less")
+```
 
+# Aufgabe 29
+Aufgabentext PDF entnehmen
 
+```{r}
+# (i)
 
+s <- rexp(n=50, rate=1/0.3)
 
+hist(s, breaks=20)
+# Die Verteilung ist linksschief
+
+# (ii)
+t.test(s, mu=0.3)
+
+# (iii)
+a <- 0.05
+p_values <- c()
+for (i in 1:10000) {
+  ex <- (rexp(n=50, rate=1/0.3))
+  p <- t.test(ex, mu=0.3)$p.value
+  if (p <= a) {
+    p_values <- append(p_values, p)
+  }
+}
+length(p_values)/10000
+# Es sind nur ~6% innerhalb des Signifikanzniveaus, wodurch wir rückschließen können,
+# dass die Exponentialverteilung nur in bestimmten Fällen zufällig der T-Verteilung nahe kommt.
+
+# (iv)
+a <- 0.05
+p_values <- c()
+for (i in 1:10000) {
+  ex <- (rexp(n=1000, rate=1/0.3))
+  p <- t.test(ex, mu=0.3)$p.value
+  if (p <= a) {
+    p_values <- append(p_values, p)
+  }
+}
+length(p_values)/10000
+# Es sind noch weniger Verteilungen der T-Verteilung ähnlich. Also: Mit vergrößendem n sinkt die Ähnlichkeit.
+```
 
 
 
