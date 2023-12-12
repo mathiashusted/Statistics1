@@ -26,16 +26,19 @@ placebo <- blutdruck[blutdruck$Gruppe=="0",]
 treated <- blutdruck[blutdruck$Gruppe=="1",]
 
 # For placebo
-placebo_test <- t.test(placebo$nachher, placebo$vorher, alternative="two.sided")
+placebo_test <- t.test(placebo$vorher, placebo$nachher, alternative="two.sided", paired=TRUE)
 
-treated_test <- t.test(treated$nachher, treated$vorher, alternative="two.sided")
+treated_test <- t.test(treated$vorher, treated$nachher, alternative="two.sided", paired=TRUE)
 
 # (iii)
 df_placebo <- nrow(placebo) - 1
 df_treated <- nrow(treated) - 1
 # (iv)
 a <- c(0.001, 0.01, 0.05, 0.1, 0.2)
-
+K1_placebo <- qt(a/2, df_placebo)
+K2_placebo <- abs(K1_placebo)
+K1_treated <- qt(a/2, df_treated)
+K2_treated <- abs(K1_treated)
 
 # (v)
 # H0 = p > a
@@ -171,7 +174,7 @@ for (i in 1:10000) {
 }
 length(p_values)/10000
 # Es sind nur ~6% innerhalb des Signifikanzniveaus, wodurch wir rückschließen können,
-# dass die Exponentialverteilung nur in bestimmten Fällen zufällig der T-Verteilung nahe kommt.
+# dass die Exponentialverteilung nin ~6% der Fälle nicht die Werkzeuge des T-Tests anwenden können (falsch-positiv)
 
 # (iv)
 a <- 0.05
@@ -184,7 +187,7 @@ for (i in 1:10000) {
   }
 }
 length(p_values)/10000
-# Es sind noch weniger Verteilungen der T-Verteilung ähnlich. Also: Mit vergrößendem n sinkt die Ähnlichkeit.
+# Es sind noch weniger Verteilungen der T-Verteilung ähnlich. Also: Mit vergrößendem n steigt die Ähnlichkeit.
 ```
 
 
