@@ -56,11 +56,30 @@ for (i in a) {
 }
 
 cat("In der Placebogruppe abzulehnen für:", reject_placebo)
-cat("In der Behandeltengruppe abzulehnen für:", reject_treated)
+cat("\nIn der Behandeltengruppe abzulehnen für:", reject_treated)
 ```
+# Aufgabe 31
+Seien S1 = (0; 1) und S2 = (x) zwei Stichproben. x sei eine reelle
+Zahl.
+(i) S1 und S2 sollen mit dem Zweistichproben t-Test verglichen werden. Ge-
+ben Sie die Freiheitsgrade der t-Teststatistik an.
+(ii) Geben Sie den einseitigen Ablehnungsbereich des Zweistichproben t-
+Tests f¨ur α = 0,025 und die Nullhypothese H0 : μ1 ≤ μ2 an.
+(iii) Geben Sie das gr¨oßte x ∈ IR an, f¨ur das die Nullhypothese H0 : μ1 ≤ μ2
+auf dem Signifikanzniveau α = 0,025 abgelehnt werden kann.
 
+```{r}
+# (i)
+s1 <- c(0,1)
+s2 <- c(runif(n=1))
 
+df_s1 <- 2-1
+df_s2 <- 1-1
 
+s1s2_test <- t.test(s1, s2)
+# not enough observations
+
+```
 
 
 
