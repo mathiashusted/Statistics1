@@ -1,0 +1,78 @@
+# Aufgabe 30
+(i) Laden Sie Blutdruckstudie.txt in einen R Datensatz.
+(ii) Berechnen Sie die Teststatistik des Zweistichproben t-Tests, der die Blut-
+druckver¨anderung (vorher - nachher) der Placebo- (Gruppe=0) mit der
+Medikamentengruppe (Gruppe=1) vergleicht.
+(iii) Geben Sie die Freiheitsgrade f¨ur den Test aus Teilaufgabe (ii) an.
+(iv) Geben Sie die Grenzen des zweiseitigen Ablehnungsbereichs f¨ur den Test
+aus Teilaufgabe (ii) f¨ur die Signifikanzniveaus α = 0,001, 0,01, 0,05, 0,1
+und α = 0,2 an.
+(v) Berechnen Sie den p-Wert f¨ur den zweiseitigen Test aus Teilaufgabe (ii)
+und geben Sie an, auf welchem der Signifikanzniveaus α = 0,001, 0,01, 0,05, 0,1
+und α = 0,2 die Nullhypothese abgelehnt werden kann.
+
+
+```{r}
+# (i)
+blutdruck <- read.table(file = "Blutdruckstudie.txt", header=TRUE)
+
+# (ii)
+treated <- subset(blutdruck, blutdruck$Gruppe=="1")
+placebo <- subset(blutdruck, blutdruck$Gruppe=="0")
+
+placebo_test <- t.test(placebo$vorher, placebo$nachher, paired=TRUE)
+treated_test <- t.test(treated$vorher, treated$nachher, paired=TRUE)
+placebo_test
+treated_test
+
+# (iii)
+placebo_df <- placebo_test$parameter
+treated_df <- treated_test$parameter
+cat("Freiheitsgrade des Placebo-Tests: ", placebo_df)
+cat("Freiheitsgrade des Behandelten-Tests: ", treated_df)
+
+# (iv)
+a <- c(0.001, 0.01, 0.05, 0.1, 0.2)
+
+k1_placebo <- qt(a/2, placebo_df)
+k2_placebo <- abs(k1_placebo)
+k1_treated <- qt(a/2, treated_df)
+k2_treated <- abs(k1_treated)
+
+# (v)
+p_placebo <- placebo_test$p.value
+p_treated <- treated_test$p.value
+
+reject_placebo <- c()
+reject_treated <- c()
+
+for (i in a) {
+  if (i < p_placebo) {
+    reject_placebo <- c(reject_placebo, i)
+  }
+  if (i < p_treated) {
+    reject_treated <- c(reject_treated, i)
+  }
+}
+
+cat("In der Placebogruppe abzulehnen für:", reject_placebo)
+cat("In der Behandeltengruppe abzulehnen für:", reject_treated)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
