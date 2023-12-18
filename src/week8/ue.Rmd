@@ -81,8 +81,44 @@ s1s2_test <- t.test(s1, s2)
 
 ```
 
+# Aufgabe 33
+Untersuchen Sie wie in Aufgabe 29 die Auswirkung der Verletzung
+der Normalverteilungsannahme auf den Fehler 1. Art durch eine Simulation:
+Erzeugen Sie in einer Simulation mit N = 100.000 Durchl¨aufen in jedem Durch-
+lauf zwei Stichproben mit je n = 5 exponentialverteilten Zufallszahlen mit
+Ereignisrate λ = 1. F¨uhren Sie in jedem Durchlauf den zweiseitigen Zweistich-
+proben t-Test durch und speichern Sie den p-Wert in einem Vektor PWERTE der
+L¨ange N = 100.000 ab. Ermitteln Sie f¨ur α = 0,05 den Anteil der p-Werte in
+PWERTE, die ≤ 0,05 sind. Was f¨allt Ihnen auf?
+
+### Definition am Rande
+**Fehler 1. Art:** $H_0$ wird fälschlicherweise verworfen
+
+```{r}
+results <- c()
+
+for (i in 1:100000) {
+  s1 <- rexp(5, 1) # n=5, lambda=1
+  s2 <- rexp(5, 1)
+  test <- t.test(s1, s2)
+  results <- c(results, test$p.value)
+}
 
 
+a <- 0.05
+
+sig_values <- c()
+
+for (i in results) {
+  if (i <= a) {
+    sig_values <- c(sig_values, i)
+  }
+}
+
+length(sig_values)/length(results)
+
+```
+Etwa $e\%$ der Einträge haben ein Signifikanzniveau unter $0.05\%$
 
 
 
