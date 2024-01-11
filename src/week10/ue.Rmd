@@ -1,0 +1,157 @@
+#Aufgabe 38
+Laden Sie die Daten aus der Datei Schueler.txt in einen R-
+Datensatz. Vergleichen Sie die K¨orpergr¨oße der Sch¨uler der 12. Klasse mit der
+K¨orpergr¨oße der Sch¨ulerinnen der 12. Klasse mit dem Mann-Whitney-U Test.
+Berechnen Sie insbesondere die beiden Rangsummen R1, R2 und die Teststa-
+tistik Z (Bezeichnungen wie im Skript). R¨ange k¨onnen mit der Funktion rank
+bestimmt werden. Berechnen Sie aus der Teststatistik Z den p-Wert. Bestim-
+men Sie den p-Wert auch mit der Funktion wilcox.test (exact=FALSE und
+correct=FALSE). Warum stimmen die beiden p-Werte nicht exakt ¨uberein?
+N¨utzliche Funktionen: subset, rank, pnorm und wilcox.test
+
+```{r}
+# Mann-Whitney-U-Test bzw. Wilcoxon-Rangsummentest
+# Er wird verwendet, wenn die Voraussetzungen für einen t-Test für unab. Stichproben NICHT erfüllt sind
+
+schueler <- read.table(file = "Schueler.txt", header=TRUE)
+
+schueler_12_m <- subset(schueler, schueler$Klasse == 12 & schueler$Gesch == "m")$Groesse
+schueler_12_w <- subset(schueler, schueler$Klasse == 12 & schueler$Gesch == "w")$Groesse
+
+ranks_m <- rank(schueler_12_m)
+ranks_w <- rank(schueler_12_w)
+
+r1 <- sum(ranks_m)
+r2 <- sum(ranks_w)
+
+n1 <- length(schueler_12_m)
+n2 <- length(schueler_12_w)
+
+u1 <- n1*n2+((n1*(n1+1))/2)-r1
+# u2 <- n1*n2+((n2*(n2+1))/2)-r2
+# u <- min(u1, u2)
+
+z <- (u1-(n1*n2)/2) / sqrt((n1*n2*(n1+n2+1))/12) # Teststatistik nach der Vorlesung
+
+z_norm <- pnorm(abs(z))
+
+p_value_z <- 2*(1-z_norm)
+
+test <- wilcox.test(schueler_12_m, schueler_12_w, exact=FALSE, correct=FALSE)
+
+p_wilcox <- test$p.value
+```
+
+# Aufgabe 39
+Laden Sie die Daten aus der Datei Schueler.txt in einen R-
+Datensatz. Stellen Sie die K¨orpergr¨oßen der Sch¨ulerinnen und Sch¨uler der
+Klassen f¨unf bis zw¨olf in einem nach Geschlecht gruppierten Boxplot dar (ein
+Diagramm mit acht Paaren von Boxen). Berechnen Sie f¨ur jede Klasse und Ge-
+schlecht den Mittelwert, die Standardabweichung, den Median, und die 25%
+und 75% Perzentile der K¨orpergr¨oße der Sch¨uler und Sch¨ulerinnen. Verglei-
+chen Sie f¨ur jede Klasse die K¨orpergr¨oße der Sch¨ulerinnen und Sch¨uler mit
+dem Mann-Whitney-U Test. Fassen Sie alle Ergebnisse in einer Tabelle zusam-
+men.
+N¨utzliche Funktionen: boxplot, mean, sd, median, quantile und wilcox.test
+
+```{r}
+groesse_w <- subset(schueler, schueler$Klasse >= 5 & schueler$Klasse <= 12 & schueler$Gesch == "w")$Groesse
+groesse_m <- subset(schueler, schueler$Klasse >= 5 & schueler$Klasse <= 12 & schueler$Gesch == "m")$Groesse
+groesse <- subset(schueler, schueler$Klasse >= 5 & schueler$Klasse <= 12)$Groesse
+
+boxplot(groesse_m, groesse_w, ylab="Größe in cm", names=c("Männlich", "Weiblich"), col=c("lightblue", "pink"))
+
+
+for (klasse in 5:12) {
+  for (geschlecht in c("m", "w")) {
+    subs <- subset(schueler, Klasse == klasse & Gesch == geschlecht)$Groesse
+    cat(klasse, ". Klasse,", geschlecht, "\nMittelwert:", mean(subs), "\nStandardabweichung:", sd(subs), "\nMedian:", median(subs), "cm\n25% bzw. 75% Quantile:", quantile(subs, c(.25, .75)), "cm\n\n")
+    
+    print(wilcox.test(subs, exact=FALSE, correct=FALSE))
+  }
+}
+
+
+```
+
+
+# Aufgabe 40
+Berechnen Sie f¨ur die Kreuztabelle
+
+|            | Heilung | Keine Heilung |
+|------------|---------|---------------|
+| Placebo    | 3       | 2             |
+| Medikament | 5       | 1             |
+|            |         |               |
+
+die erwarteten Zellh¨aufigkeiten. Berechnen Sie daraus die Teststatistik X und
+den p-Wert f¨ur den χ2-Test. Warum ist der χ2-Test hier wohl nicht zuverl¨assig?
+
+```{r}
+kreuztabelle <- matrix(c(3, 2, 5, 1), nrow = 2, byrow = TRUE)
+rownames(kreuztabelle) <- c("Placebo", "Medikament")
+colnames(kreuztabelle) <- c("Heilung", "keine Heilung")
+
+result <- chisq.test(kreuztabelle)
+test_statistic <- result$statistic
+df <- result$parameter
+p_value <- 1 - pchisq(test_statistic, df)
+
+p_value
+
+```
+
+Weil die Gesamtanzahl an Stichproben hierbei nur 11 beträgt, ist die Aussagekraft des Tests sehr eingeschränkt.
+
+# Aufgabe 41
+
+In einer Studie wird ein Medikament mit einem Placebo vergli-
+chen. Die Ergebnistabelle lautet:
+Heilung keine Heilung
+Placebo 60% 40%
+Medikament 65% 35%
+Beide Gruppen sind gleich groß und bestehen aus jeweils n Patienten. Die
+Prozentwerte in der Kreuztabelle sind gerundete Zeilenprozente, d.h. 60% der
+Patienten in der Placebo- und 65% der Patienten in der Medikamentengruppe
+wurden geheilt. Geben Sie das kleinste n an, f¨ur das der χ2-Test signifikant auf
+dem 5% Signifikanzniveau ist. Wie groß muss n mindestens gew¨ahlt werden,
+damit der χ2-Test auf dem 1% Signifikanzniveau signifikant ist?
+Hinweis: Berechnen Sie f¨ur allgemeines n die erwarteten H¨aufigkeiten und die
+Teststatistik X des χ2-Tests. Welche Bedingung muss f¨ur X (und damit f¨ur
+n) gelten, damit der χ2-Test signifikant auf dem 5% oder 1% Signifikanzniveau
+ist?
+N¨utzliche Funktion: qchisq
+
+```{r}
+has_been_called <- FALSE
+for (x in 1:10000) {
+  kreuztabelle <- matrix(c(x*0.6, x*0.4, x*0.65, x*0.35), nrow = 2, byrow = TRUE)
+  rownames(kreuztabelle) <- c("Placebo", "Medikament")
+  colnames(kreuztabelle) <- c("Heilung", "keine Heilung")
+  result <- chisq.test(kreuztabelle)
+  test_statistic <- result$statistic
+  df <- result$parameter
+  p_value <- 1 - pchisq(test_statistic, df)
+  
+  if (p_value < 0.05 & !has_been_called) {
+    cat("\np for", x, ":", p_value)
+    has_been_called <- TRUE
+  }
+  if (p_value < 0.01) {
+    cat("\np for", x, ":", p_value)
+    break
+  }
+}
+
+
+test_statistic <- result$statistic
+df <- result$parameter
+p_value <- 1 - pchisq(test_statistic, df)
+
+p_value
+
+```
+
+
+Mindestens n = 760, mit $\alpha = 0.05$, mindestens 1284 mit $\alpha = 0.01$
+
