@@ -55,11 +55,16 @@ men.
 N¨utzliche Funktionen: boxplot, mean, sd, median, quantile und wilcox.test
 
 ```{r}
-groesse_w <- subset(schueler, schueler$Klasse >= 5 & schueler$Klasse <= 12 & schueler$Gesch == "w")$Groesse
-groesse_m <- subset(schueler, schueler$Klasse >= 5 & schueler$Klasse <= 12 & schueler$Gesch == "m")$Groesse
-groesse <- subset(schueler, schueler$Klasse >= 5 & schueler$Klasse <= 12)$Groesse
+data <- subset(schueler, Klasse >= 5, Klasse <= 12)
 
-boxplot(groesse_m, groesse_w, ylab="Größe in cm", names=c("Männlich", "Weiblich"), col=c("lightblue", "pink"))
+groessen <- data.frame(
+  Klasse = data$Klasse,
+  Gesch = data$Gesch,
+  Groesse = data$Groesse
+)
+
+
+boxplot(Groesse ~ Gesch * Klasse, data = groessen, ylab = "Größe in cm", col = c("lightblue", "pink"))
 
 
 for (klasse in 5:12) {
@@ -71,6 +76,7 @@ for (klasse in 5:12) {
   }
 }
 
+t
 
 ```
 
@@ -94,14 +100,14 @@ colnames(kreuztabelle) <- c("Heilung", "keine Heilung")
 
 result <- chisq.test(kreuztabelle)
 test_statistic <- result$statistic
+exp_val <- result$expected
+p_val <- result$p.value
 df <- result$parameter
-p_value <- 1 - pchisq(test_statistic, df)
-
-p_value
+# Under the hood: p_value <- 1 - pchisq(test_statistic, df)
 
 ```
 
-Weil die Gesamtanzahl an Stichproben hierbei nur 11 beträgt, ist die Aussagekraft des Tests sehr eingeschränkt.
+Weil die Gesamtanzahl an Stichproben hierbei nur 11 beträgt, ist die Aussagekraft des Tests sehr eingeschränkt, da $\sigma^2$ klein
 
 # Aufgabe 41
 
@@ -131,7 +137,7 @@ for (x in 1:10000) {
   result <- chisq.test(kreuztabelle)
   test_statistic <- result$statistic
   df <- result$parameter
-  p_value <- 1 - pchisq(test_statistic, df)
+  p_value <- result$p.value
   
   if (p_value < 0.05 & !has_been_called) {
     cat("\np for", x, ":", p_value)
