@@ -1,0 +1,151 @@
+# Aufgabe 42
+Berechnen Sie f¨ur die Variablen vorher, nachher und vorher-nachher
+aus dem Datensatz in Blutdruckstudie.txt die 90%, 95% und 99% Konfi-
+denzintervalle. Entscheiden Sie anhand der Konfidenzintervalle, ob sich der
+mittlere Blutdruck vor der Behandlung (vorher) signifikant von 167 mmHg
+unterscheidet. F¨uhren Sie die Betrachtung f¨ur die Signifikanzniveaus α =
+0,1, 0,05, 0,01 und f¨ur α = 0,001 durch
+
+
+```{r}
+
+# (i)
+blutdruck <- read.table(file = "Blutdruckstudie.txt", header=TRUE)
+
+vorher <- blutdruck$vorher
+nachher <- blutdruck$nachher
+vor_nach <- vorher-nachher
+
+n <- length(blutdruck$Gruppe) # Bei allen 3 identisch
+
+# Analog zur Vorlesung
+intervals <- c(0.9, 0.95, 0.99)
+
+t <- qt(intervals, n-1)
+
+mu <- c(mean(vorher), mean(nachher), mean(vor_nach))
+sd <- c(sd(vorher), sd(nachher), mean(vor_nach))
+
+
+# In jedem Datensatz entsprechen jeweils Positionen: 1 = vorher, 2 = nachher, 3 = vorher-nachher
+ci_90_l <- mu-sd/sqrt(n)*t[1]
+ci_90_u <- mu+sd/sqrt(n)*t[1]
+ci_95_l <- mu-sd/sqrt(n)*t[2]
+ci_95_u <- mu+sd/sqrt(n)*t[2]
+ci_99_l <- mu-sd/sqrt(n)*t[3]
+ci_99_u <- mu+sd/sqrt(n)*t[3]
+
+# (ii)
+mean_vorher <- mean(vorher)
+
+ci_999_l <- mu-sd/sqrt(n)*0.999
+ci_999_u <- mu+sd/sqrt(n)*0.999
+```
+
+Der Mittelwert von "vorher" liegt in allen Konfidenzintervall (bis einschl. $(1 - 0,001)$)
+
+# Aufgabe 43
+Geben Sie ein Beispiel einer Stichprobe aus n = 2 Elementen an,
+f¨ur die das 95% Konfidenzintervall genau die L¨ange 1 hat.
+```{r}
+S <- c(1,1) # Diese Werte müssen modifiziert werden...
+n <- length(S)
+
+mu <- mean(S)
+sd <- sd(S)
+t <- qt(0.95, n)
+
+
+ci_95_l <- mu-sd/sqrt(n)*t
+ci_95_u <- mu+sd/sqrt(n)*t
+ci_len <- ci_95_u - ci_95_l
+
+```
+
+
+# Aufgabe 44
+Der Einstichproben t-Test (H0 : μ = 0) f¨ur eine Stichprobe S
+vom Umfang n ergibt einen p-Wert von p = 0,113. Welches Konfidenzniveau
+(1 − α)100% muss gew¨ahlt werden, damit die 0 auf einer der Grenzen des
+Konfidenzintervalls f¨ur S liegt?
+
+```{r}
+# TODO
+```
+
+# Aufgabe 45
+F¨ur die Daten in Blutdruckstudie.txt sollen folgende Aussagen
+durch einen geeigneten statistischen Test untersucht werden.
+A Bei mehr als 40% der Patienten ist der Blutdruck vor der Behandlung
+(vorher) h¨oher als 170 mmHg.
+B Der mittlere Bludruck vor und nach der Behandlung unterscheiden sich.
+C Der mittlere Blutdruck vor der Behandlung unterscheiden sich zwischen
+Gruppe 0 und 1.
+D Der Anteil der Patienten, die nach der Behandlung einen Blutdruck h¨oher
+als 170 mmHg haben, ist in Gruppe 0 und 1 unterschiedlich.
+Geben Sie f¨ur jede Aussage einen geeigneten statistischen Test an und formu-
+lieren Sie die zugeh¨orige Nullhypothese. F¨uhren Sie die Tests durch und geben
+Sie die p-Werte an. Welche der Nullhypothesen k¨onnen auf dem Signifikanzni-
+veaus α = 0,05 abgelehnt werden?
+Hinweis: Gibt es mehrere geeignete Tests f¨ur eine Aussage, w¨ahlen Sie den
+Tests aus, der Ihnen am geeignetsten erscheint. Begr¨unden Sie Ihre Wahl.
+
+```{r}
+blutdruck <- read.table(file = "Blutdruckstudie.txt", header=TRUE)
+n <- length(blutdruck)
+# (A)
+# H0: (Anteil an Patienten mit Blutdruck vorher > 170mmHg) <= 40%
+# H1: Anteil > 40%
+# Eine Stichprobe, binärar Ausgang, einseitig -> Binomialtest
+
+erfolge <- length(subset(blutdruck, blutdruck$vorher > 170))
+
+binom.test(erfolge, n, p=0.4, alternative=c("greater"))
+
+
+# (B)
+# H0: (Mittlerer Blutdruck vor Behandlung) = (Mittlerer Blutdruck nach Behandlung)
+# H1: (Mittlerer Blutdruck vor Behandlung) != (Mittlerer Blutdruck nach Behandlung)
+# Aufgrund unserer Nullhypothese müssen wir hier einen zweiseitigen Test durchführen
+# Wir verwenden den gepaarte Stichproben-t-Test (paired=TRUE)
+
+vorher <- blutdruck$vorher
+nachher <- blutdruck$nachher
+
+t.test(vorher, nachher, paired=TRUE)
+
+# (C)
+# H0: (Blutdruck vor der Behandlung in Gruppe 1) = (Blutdruck vor der Behandlung in Gruppe 0)
+# H1: (Blutdruck vor der Behandlung in Gruppe 1) != (Blutdruck vor der Behandlung in Gruppe 0)
+# Wieder wie B, allerdings verwenden wir hier stattdessen den unabhängigen t-Test, da die beiden Gruppen
+# nicht voneinander abhängen.
+
+gruppe0 <- subset(blutdruck, blutdruck$Gruppe == 0)
+gruppe1 <- subset(blutdruck, blutdruck$Gruppe == 1)
+
+t.test(gruppe0, gruppe1)
+
+# (D)
+# H0: (Anteil an Patienten in Gruppe 0, nach Behandlung mit Blutdruck > 170mmHg) = (... in Gruppe 1)
+# H1: (Anteil in Gruppe 0) != (Anteil in Gruppe 1)
+# Auch hier wieder den gleichen Test wie in C
+
+gruppe0 <- subset(blutdruck, blutdruck$Gruppe == 0 & blutdruck$nachher > 170)
+gruppe1 <- subset(blutdruck, blutdruck$Gruppe == 1 & blutdruck$nachher > 170)
+
+
+```
+
+# Aufgabe 46
+In wissenschaftlichen Ver¨offentlichungen wird der Mittelwert ˆμ
+einer Stichprobe oft in der Form $\hatμ ± SE$ angegeben.
+Die Gr¨oße SE ist der Standardfehler von ˆμ. Das Interval $(\hatµ − SE; \hatµ + SE)$
+ist ein Konfidenzintervall f¨ur μ. Geben Sie das Niveau dieses Konfidenzinter-
+valls f¨ur Stichproben der Gr¨oße n = 10 und n = 1000 an.
+
+```{r}
+sd <- 2 # Standardabweichung, hier beliebig 2 gewählt
+se <- sqrt(sd)/sqrt(n)
+```
+
+
