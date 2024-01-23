@@ -48,7 +48,7 @@ Der Mittelwert von "vorher" liegt in allen Konfidenzintervall (bis einschl. $(1 
 Geben Sie ein Beispiel einer Stichprobe aus n = 2 Elementen an,
 f¨ur die das 95% Konfidenzintervall genau die L¨ange 1 hat.
 ```{r}
-S <- c(1,1) # Diese Werte müssen modifiziert werden...
+S <- c(-0.027,0.027) # Diese Werte müssen modifiziert werden...
 n <- length(S)
 
 mu <- mean(S)
@@ -114,6 +114,8 @@ nachher <- blutdruck$nachher
 
 t.test(vorher, nachher, paired=TRUE)
 
+# Alternativ: Vorzeichentest, Vorzeichenrangtest
+
 # (C)
 # H0: (Blutdruck vor der Behandlung in Gruppe 1) = (Blutdruck vor der Behandlung in Gruppe 0)
 # H1: (Blutdruck vor der Behandlung in Gruppe 1) != (Blutdruck vor der Behandlung in Gruppe 0)
@@ -129,7 +131,7 @@ t.test(gruppe0, gruppe1)
 # H0: (Anteil an Patienten in Gruppe 0, nach Behandlung mit Blutdruck > 170mmHg) = (... in Gruppe 1)
 # H1: (Anteil in Gruppe 0) != (Anteil in Gruppe 1)
 # Auch hier wieder den gleichen Test wie in C
-
+# Alternativ: Mann-Whitney-U-Test
 gruppe0 <- subset(blutdruck, blutdruck$Gruppe == 0 & blutdruck$nachher > 170)
 gruppe1 <- subset(blutdruck, blutdruck$Gruppe == 1 & blutdruck$nachher > 170)
 
